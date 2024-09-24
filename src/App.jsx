@@ -9,6 +9,7 @@ import PrivateProfile from './components/PrivateProfile'
 
 import bgHero from './assets/bg-hero1.png'
 import {userActivities, publicProfileData, privateProfileData} from './constants'
+import ProgressOverview from './components/ProgressiveOverview'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,6 +25,7 @@ function App() {
           >
             <Navbar />
             <Hero />
+            <ProgressOverview/>
           </div>
         </div>
         
@@ -51,7 +53,9 @@ function App() {
           />
         </div>
 
+
       </BrowserRouter>
+      
     </>
   )
 }
