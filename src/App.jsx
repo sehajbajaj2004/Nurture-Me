@@ -24,6 +24,7 @@ function App() {
           >
             <Navbar />
             <Hero />
+            <ProgressOverview/>
           </div>
         </div>
 
