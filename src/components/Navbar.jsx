@@ -6,6 +6,7 @@ import { useState } from 'react'
 import menu from '../assets/menu.svg'
 import close from '../assets/close.svg'
 
+import profile from '../assets/profile-user.png'
 
 import { navLinks } from '../constants'
 
@@ -41,6 +42,10 @@ const Navbar = () => {
                             <a href={`#${link.id}`}>{link.title}</a>
                         </li>
                     ))}
+                    <li key="profile"
+                        onClick={() => setActive("profile")}>
+                            <img src={profile} className='w-8 object-contain cursor-pointer'/>
+                    </li>
                 </ul>
             </div>
 
