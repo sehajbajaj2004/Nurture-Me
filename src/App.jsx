@@ -6,7 +6,7 @@ import Hero from './components/Hero'
 import Profile from './components/Profile'
 import PrivateProfile from './components/PrivateProfile'
 
-import bgHero from './assets/bg-hero2.jpg'
+import bgHero from './assets/bg-hero4.jpg'
 import {userActivities, publicProfileData, privateProfileData} from './constants'
 
 import ProgressOverview from './components/ProgressiveOverview'
@@ -21,7 +21,7 @@ function App() {
         <div className='relative z-0'>
           <div
             style={{ backgroundImage: `url(${bgHero})` }}
-            className="bg-cover bg-no-repeat bg-center h-[630px]"
+            className="bg-cover bg-no-repeat bg-center h-[700px]"
           >
             <Navbar />
             <Hero />
@@ -30,7 +30,6 @@ function App() {
 
         <ProgressOverview/>
         
-        {/* <div>
           <Profile
             name={publicProfileData.name}
             university={publicProfileData.university}
@@ -40,8 +39,6 @@ function App() {
             following={publicProfileData.following}
             activities={publicProfileData.activities}
           />
-        </div>
-        <div>
           <PrivateProfile
             name={privateProfileData.name}
             university={privateProfileData.university}
@@ -52,7 +49,6 @@ function App() {
             habits={privateProfileData.habits}
             suggestions={privateProfileData.suggestions}
           />
-        </div> */}
 
       </BrowserRouter>
     </>

@@ -5,12 +5,12 @@ import { OrbitControls, Preload, useGLTF } from '@react-three/drei';
 import CanvasLoader from '../Loader';
 
 const Emojis = () => {
-    const { scene } = useGLTF('./emojis/smiley3.gltf');
+    const { scene } = useGLTF('./emojis/smiley4.gltf');
 
     return (
 
         <mesh>
-            <hemisphereLight intensity={3} groundColor="black" />
+            <hemisphereLight intensity={2} groundColor="white" />
             <pointLight intensity={2} />
             <spotLight
                 intensity={10}
