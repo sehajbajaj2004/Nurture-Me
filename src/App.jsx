@@ -25,11 +25,13 @@ function App() {
           >
             <Navbar />
             <Hero />
-            <ProgressOverview/>
+            
           </div>
         </div>
+
+        <ProgressOverview/>
         
-        <div>
+        {/* <div>
           <Profile
             name={publicProfileData.name}
             university={publicProfileData.university}
@@ -51,7 +53,7 @@ function App() {
             habits={privateProfileData.habits}
             suggestions={privateProfileData.suggestions}
           />
-        </div>
+        </div> */}
 
 
       </BrowserRouter>

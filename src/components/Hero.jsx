@@ -14,11 +14,12 @@ const Hero = () => {
                         <div className='h-[500px] w-[500px]'>
                          <EmojiCanvas />
                         </div>
-                        <div className='py-40 mx-10'>
-                            <h1 className={`${styles.heroHeadText}`}>Hi, <span className='text-[#ffffff]'>Sehaj</span></h1>
-                            <p className={`${styles.heroSubText} text-white-100 mt-2`}>
-                                Welcome to Mental and Physical<br className="hidden sm:block" /> Wellness stop at one place.
-                            </p>
+                        <div className='py-28 mx-5'>
+                            <h1 className={`${styles.heroHeadText2}`}>Hi, <span className='text-[#ffffff]'>Sehaj</span>
+                            <br /> How are you doing today?</h1>
+                            {/* <p className={`${styles.heroSubText} text-white-100 mt-2`}>
+                                How are you doing today?
+                            </p> */}
                         </div>
                     </div>
                 </div>
