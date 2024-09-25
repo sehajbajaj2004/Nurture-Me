@@ -1,14 +1,16 @@
+import pfp1 from '../assets/pfp1.jpg';
+
 export const navLinks = [{
+    id: "forum",
+    title: "Forum",
+},
+{
+    id: "mini-games",
+    title: "Mini Games",
+},
+{
     id: "about",
     title: "About",
-},
-{
-    id: "work",
-    title: "Work",
-},
-{
-    id: "contact",
-    title: "Contact",
 },
 ];
 
@@ -19,8 +21,8 @@ const userActivities = [
 
   // Dummy data for public profile
   const publicProfileData = {
-    name: "John Doe",
-    university: "XYZ University",
+    name: "Gurmehr Singh Gulati",
+    university: "UPES, Dehradun",
     bio: "Passionate about balancing academic life with mental and physical wellness.",
     posts: 54,
     followers: 128,
@@ -30,9 +32,9 @@ const userActivities = [
 
   // Dummy data for private profile
   const privateProfileData = {
-    name: "John Doe",
-    university: "XYZ University",
-    photo: "https://via.placeholder.com/150", // Replace with the actual photo URL
+    name: "Gurmehr Singh Gulati",
+    university: "UPES, Dehradun",
+    photo: pfp1, // Replace with the actual photo URL
     height: 170, // in cm
     weight: 65,  // in kg
     mood: "Happy",

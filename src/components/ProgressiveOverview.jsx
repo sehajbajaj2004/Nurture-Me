@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import StatCard from './StatCard'; // Assuming StatCard is in the same folder
 
+
+import pfp1 from '../assets/pfp1.jpg';
+
 const ProgressOverview = () => {
   const [stats, setStats] = useState([
     { label: 'Distance Walked', value: '15', goal: '20', unit: 'km', icon: '🚶‍♂️' },
@@ -37,9 +40,9 @@ const ProgressOverview = () => {
         {/* Right side: Profile Image */}
         <div className="flex items-center justify-center">
           <img
-            src="https://via.placeholder.com/300" // Use an actual profile image URL here
+            src={pfp1} // Use an actual profile image URL here
             alt="Profile"
-            className="rounded-full shadow-lg"
+            className="object-fill rounded-full shadow-lg"
             style={{ width: '300px', height: '300px' }}
           />
         </div>

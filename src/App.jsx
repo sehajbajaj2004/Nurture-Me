@@ -30,7 +30,7 @@ function App() {
 
         <ProgressOverview/>
         
-          <Profile
+          {/* <Profile
             name={publicProfileData.name}
             university={publicProfileData.university}
             bio={publicProfileData.bio}
@@ -38,7 +38,7 @@ function App() {
             followers={publicProfileData.followers}
             following={publicProfileData.following}
             activities={publicProfileData.activities}
-          />
+          /> */}
           <PrivateProfile
             name={privateProfileData.name}
             university={privateProfileData.university}
