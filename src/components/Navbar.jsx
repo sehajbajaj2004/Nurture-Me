@@ -28,7 +28,7 @@ const Navbar = () => {
                 >
                     {/* <img src="" alt="Logo" className='w-10 h-10 object-contain' /> */}
                     <p className='text-white text-[25px] font-bold cursor-pointer'>
-                        Nurture<span className='text-[#ffed4f]'>.Me</span>
+                        Nurture<span className='text-[#ffec95]'>.Me</span>
                     </p>
                 </Link>
 

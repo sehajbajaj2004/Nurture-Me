@@ -13,8 +13,8 @@ const Emojis = () => {
             <hemisphereLight intensity={3} groundColor="black" />
             <pointLight intensity={2} />
             <spotLight
-                intensity={3}
-                position={[-20, 50, 10]}
+                intensity={10}
+                position={[-20, 100, 10]}
                 angle={0.12}
                 penumbra={1}
                 castShadow

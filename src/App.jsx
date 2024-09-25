@@ -3,12 +3,13 @@ import { BrowserRouter } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 
-
 import Profile from './components/Profile'
 import PrivateProfile from './components/PrivateProfile'
 
-import bgHero from './assets/bg-hero1.png'
+import bgHero from './assets/bg-hero2.jpg'
 import {userActivities, publicProfileData, privateProfileData} from './constants'
+
+import ProgressOverview from './components/ProgressiveOverview'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -20,11 +21,10 @@ function App() {
         <div className='relative z-0'>
           <div
             style={{ backgroundImage: `url(${bgHero})` }}
-            className="bg-cover bg-no-repeat bg-center h-screen"
+            className="bg-cover bg-no-repeat bg-center h-[630px]"
           >
             <Navbar />
             <Hero />
-            <ProgressOverview/>
           </div>
         </div>
 
