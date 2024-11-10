@@ -14,7 +14,7 @@ const Hero = () => {
                         </div>
                         
                         <div className='py-28 mx-14'>
-                            <h1 className={`${styles.heroHeadText2} text-[#000000]`}>Hi, <span className='text-[#ffde20]'>Sehaj</span>
+                            <h1 className={`${styles.heroHeadText2} text-[#000000]`}>Hi, <span className='text-[#ffde20]'>Gurmehr</span>
                                 <br /> How are you doing today?</h1>
                         </div>
                     </div>
