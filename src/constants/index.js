@@ -1,18 +1,28 @@
 import pfp1 from '../assets/pfp1.jpg';
 
-export const navLinks = [{
-    id: "forum",
-    title: "Forum",
-},
-{
-    id: "mini-games",
-    title: "Mini Games",
-},
-{
-    id: "about",
-    title: "About",
-},
+export const navLinks = [
+  {
+      id: "forum",
+      title: "Forum",
+      path: "/forum"
+  },
+  {
+      id: "mini-games",
+      title: "Mini Games",
+      path: "/mini-games"
+  },
+  {
+      id: "about",
+      title: "About",
+      path: "/about"
+  },
+  {
+      id: "register",
+      title: "Register",
+      path: "/register"
+  }
 ];
+
 
 const userActivities = [
     { description: "Completed a meditation session", time: "2 hours ago" },
