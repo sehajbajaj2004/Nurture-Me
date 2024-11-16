@@ -1,114 +1,101 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-    const history = useNavigate(); // Correctly setting up useNavigate hook for routing
+    const navigate = useNavigate(); // Correctly using the useNavigate hook
 
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
+    // State variables for form fields
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [password, setPassword] = useState("");
 
-    async function submit(e) {
+    // Form submission handler
+    const submit = async (e) => {
         e.preventDefault(); // Prevent the default form submission
 
         try {
-            // Sending a POST request to the backend with form data
+            // Sending a POST request to the backend
             const res = await axios.post("http://localhost:8080/Register", {
                 username,
                 email,
                 phone,
-                password
+                password,
             });
 
-            console.log(res.data); // Debugging the response data
-
-            // Handle response from backend
             if (res.data === "exist") {
-                // If user exists, navigate to /Forum and pass the username as state
-                history("/Forum", { state: { id: username } });
+                // User exists: Navigate to the forum page with the username in state
+                navigate("/Forum", { state: { id: username } });
             } else if (res.data === "nonexist") {
-                // If user does not exist, show an alert
-                alert("User not found!");
+                // New user: Show success message or navigate to a different page
+                alert("Registration successful!");
+                navigate("/Login");
             }
-        } catch (e) {
-            alert("Something went wrong.");
-            console.error(e);
+        } catch (error) {
+            alert("Something went wrong. Please try again.");
+            console.error("Error during registration:", error);
         }
-    }
+    };
 
     return (
         <section>
             <div className="section-registration">
-                <div className="reg-image">
-                    <img src="" alt="" />
-                </div>
-                <div className="reg-form">
-                    <form onSubmit={submit}>
-                        <div>
-                            <label htmlFor="username" className='font-medium'>Username </label>
-                            <input
-                                type="text"
-                                name="username"
-                                placeholder="Username"
-                                id="username"
-                                required
-                                autoComplete="off"
-                                value={username} // Bind value to state
-                                onChange={(e) => setUsername(e.target.value)} // Update state on change
-                            />
-                        </div>
+                <h2>Register</h2>
+                <form onSubmit={submit}>
+                    <div>
+                        <label htmlFor="username">Username</label>
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                        <div>
-                            <label htmlFor="email">Email </label>
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Enter Email id"
-                                id="email"
-                                required
-                                autoComplete="off"
-                                value={email} // Bind value to state
-                                onChange={(e) => setEmail(e.target.value)} // Update state on change
-                            />
-                        </div>
+                    <div>
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                        <div>
-                            <label htmlFor="phone">Phone Number (+91): </label>
-                            <input
-                                type="text"
-                                name="phone"
-                                placeholder="Phone Number"
-                                id="phone"
-                                required
-                                autoComplete="off"
-                                value={phone} // Bind value to state
-                                onChange={(e) => setPhone(e.target.value)} // Update state on change
-                            />
-                        </div>
+                    <div>
+                        <label htmlFor="phone">Phone Number</label>
+                        <input
+                            type="text"
+                            id="phone"
+                            placeholder="Enter your phone number"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                        <div>
-                            <label htmlFor="password">Create Password </label>
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="Enter Password"
-                                id="password"
-                                required
-                                autoComplete="off"
-                                value={password} // Bind value to state
-                                onChange={(e) => setPassword(e.target.value)} // Update state on change
-                            />
-                        </div>
+                    <div>
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Create a password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                        <br />
-                        <button type="submit">Register Now</button> {/* Submit button */}
-                    </form>
-                </div>
+                    <button type="submit">Register</button>
+                </form>
             </div>
         </section>
     );
-}
+};
 
 export default Register;

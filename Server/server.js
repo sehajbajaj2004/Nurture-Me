@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
 const app = express();
 
 // MongoDB connection
@@ -24,41 +25,44 @@ const userSchema = new mongoose.Schema({
 // Create the User model
 const User = mongoose.model("User", userSchema);
 
+// CORS Configuration
 const corsOptions = {
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173"], // Adjust according to your frontend URL
 };
 
-// Enable CORS and JSON parsing middleware
-app.use(cors(corsOptions));
-app.use(express.json());
+// Middleware
+app.use(cors(corsOptions)); // Enable CORS
+app.use(express.json()); // Parse JSON requests
 
+// POST /Register endpoint
 app.post("/Register", async (req, res) => {
     const { username, email, phone, password } = req.body;
 
-    const data = {
-        username,
-        email,
-        phone,
-        password, // Remember to hash passwords in production
-    };
-
     try {
-        const check = await User.findOne({ email: email });
+        // Check if a user with the provided email already exists
+        const existingUser = await User.findOne({ email });
 
-        if (check) {
+        if (existingUser) {
             return res.json("exist"); // User already exists
-        } else {
-            await User.create(data); // Save new user
-            return res.json("nonexist"); // New user created
         }
+
+        // Save the new user to the database
+        const newUser = new User({
+            username,
+            email,
+            phone,
+            password, // Remember: Hash passwords for security in production
+        });
+
+        await newUser.save();
+        return res.json("nonexist"); // New user created
     } catch (error) {
         console.error("Error inserting data:", error);
         return res.status(500).json("Error saving user");
     }
 });
 
-
-// Start server
+// Start the server
 app.listen(8080, () => {
-    console.log("Server running on port 8080");
+    console.log("Server running on http://localhost:8080");
 });
