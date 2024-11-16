@@ -27,9 +27,11 @@ function App() {
       <BrowserRouter>
         <div className='relative z-0'>
           <div
-            className="bg-cover bg-no-repeat bg-center h-[100px]"
+            style={{ backgroundImage: `url(${bgHero})` }}
+            className="bg-cover bg-no-repeat bg-center h-[700px]"
           >
             <Navbar />
+            <Hero />
           </div>
         </div>
 
