@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 function Forum() {
+  const location = useLocation();
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState("");
+  const [username, setUsername] = useState(location.state ? location.state.id : "Guest");
 
   const handleSubmit = () => {
     if (newQuestion.trim() === "") return;
@@ -14,7 +17,7 @@ function Forum() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       {/* Header */}
       <h1 className="text-center text-4xl font-bold mb-10 text-indigo-600">
-        Nurture Me - FAQ
+        Hi <span className="text-yellow-500 ">{username}</span>, What's on your mind?
       </h1>
 
       {/* FAQs Section */}
