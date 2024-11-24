@@ -35,6 +35,15 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
+const questionSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  questions: [{ type: String }],
+  timestamp: { type: Date, default: Date.now }
+});
+
+// Create the Question model
+const Question = mongoose.model("Question", questionSchema);
+
 // Create the User model
 const User = mongoose.model("User", userSchema);
 
@@ -149,6 +158,51 @@ app.post("/Login", async (req, res) => {
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json("Error during login");
+  }
+});
+
+// POST endpoint to save questions
+app.post("/saveQuestions", async (req, res) => {
+  const { username, questions } = req.body;
+
+  try {
+    // Find existing questions for the user
+    let userQuestions = await Question.findOne({ username });
+
+    if (userQuestions) {
+      // Update existing questions
+      userQuestions.questions = questions;
+      await userQuestions.save();
+    } else {
+      // Create new questions document
+      userQuestions = new Question({
+        username,
+        questions
+      });
+      await userQuestions.save();
+    }
+
+    res.json({ success: true, message: "Questions saved successfully" });
+  } catch (error) {
+    console.error("Error saving questions:", error);
+    res.status(500).json({ success: false, message: "Error saving questions" });
+  }
+});
+
+// GET endpoint to retrieve questions
+app.get("/getQuestions/:username", async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const userQuestions = await Question.findOne({ username });
+    if (userQuestions) {
+      res.json({ success: true, questions: userQuestions.questions });
+    } else {
+      res.json({ success: true, questions: [] });
+    }
+  } catch (error) {
+    console.error("Error retrieving questions:", error);
+    res.status(500).json({ success: false, message: "Error retrieving questions" });
   }
 });
 

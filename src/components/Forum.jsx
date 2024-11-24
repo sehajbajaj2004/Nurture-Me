@@ -1,17 +1,67 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import axios from "axios"; // Make sure to import axios
 
 function Forum() {
   const location = useLocation();
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState("");
   const [username, setUsername] = useState(location.state ? location.state.id : "Guest");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const handleSubmit = () => {
-    if (newQuestion.trim() === "") return;
-    setQuestions([...questions, newQuestion]);
-    setNewQuestion("");
+  // Fetch questions when component mounts
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/getQuestions/${username}`);
+        if (response.data.success) {
+          setQuestions(response.data.questions);
+        }
+      } catch (err) {
+        setError("Failed to load questions");
+        console.error("Error fetching questions:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (username !== "Guest") {
+      fetchQuestions();
+    } else {
+      setLoading(false);
+    }
+  }, [username]);
+
+  // Save questions to database
+  const saveQuestions = async (updatedQuestions) => {
+    try {
+      const response = await axios.post("http://localhost:8080/saveQuestions", {
+        username,
+        questions: updatedQuestions
+      });
+
+      if (!response.data.success) {
+        setError("Failed to save question");
+      }
+    } catch (err) {
+      setError("Failed to save question");
+      console.error("Error saving questions:", err);
+    }
   };
+
+  const handleSubmit = async () => {
+    if (newQuestion.trim() === "") return;
+    
+    const updatedQuestions = [...questions, newQuestion];
+    setQuestions(updatedQuestions);
+    setNewQuestion("");
+
+    if (username !== "Guest") {
+      await saveQuestions(updatedQuestions);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
