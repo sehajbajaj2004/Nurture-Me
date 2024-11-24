@@ -11,7 +11,6 @@ import axios from 'axios'
 import Register from './components/Register'
 import Forum from './components/Forum'
 import UnityViewer from './components/UnityViewer'
-import Forum from './components/Forum'
 import Chat from './components/Chat'
 import Admin from './components/AdminPage'
 import "./UnityViewer.css";
@@ -44,7 +43,10 @@ function App() {
 
         <Routes>
           <Route path="/Register" element={<Register />} />
-        </Routes> */}
+          <Route path="/Forum" element={<Forum />} />
+          <Route path="/Admin" element={<Admin />} />
+          <Route path="/Chat" element={<Chat />} />
+        </Routes> 
 
         {/* <ProgressOverview /> */}
 
