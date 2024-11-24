@@ -10,11 +10,14 @@ import ProgressOverview from './components/ProgressiveOverview'
 import axios from 'axios'
 import Register from './components/Register'
 import Forum from './components/Forum'
-import UnityViewer from './components/UnityViewer'
 import Chat from './components/Chat'
 import Admin from './components/AdminPage'
 import "./UnityViewer.css";
 import Login from './components/Login'
+import BreathingTiles from './components/BreathingTiles'
+import EndlessRunner from './components/EndlessRunner'
+import WorkoutWheel from './components/WorkoutWheel'
+import ShooterGame from './components/ShooterGame'
 
 
 function App() {
@@ -38,7 +41,10 @@ function App() {
           >
             <Navbar />
             {/* <Hero />
-            <UnityViewer/> */}
+            <BreathingTiles/>
+            <EndlessRunner/>
+            <WorkoutWheel/>
+            <ShooterGame/> */}
           </div>
         </div>
 
