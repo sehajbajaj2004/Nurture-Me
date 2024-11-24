@@ -15,7 +15,7 @@ import Chat from './components/Chat'
 import Admin from './components/AdminPage'
 import "./UnityViewer.css";
 import Login from './components/Login'
-import AdminPage from './components/AdminPage'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -45,6 +45,9 @@ function App() {
         <Routes>
           <Route path="/Register" element={<Register />} />
           <Route path="/Forum" element={<Forum />} />
+          <Route path="/Chat" element={<Chat />} />
+          <Route path="/Admin" element={<Admin />} />
+          <Route path="/Login" element={<Login />} />
         </Routes>
 
         {/* <ProgressOverview /> */}

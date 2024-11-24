@@ -37,7 +37,7 @@ const Login = () => {
         <section className="flex items-center justify-center min-h-screen">
             <div className="outer flex flex-col items-center justify-center">
                 {/* Login Form */}
-                <div className="section-login flex-col p-6 md:p-8 mb-10">
+                <div className="section-login flex-col md:p-8 mb-40">
                     <h2 className="text-5xl font-bold text-center text-gray-700 mb-20">Login</h2>
                     <form className="space-y-4" onSubmit={submit}>
                         {/* Username */}
