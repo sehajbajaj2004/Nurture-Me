@@ -17,9 +17,9 @@ export const navLinks = [
       path: "/about"
   },
   {
-      id: "register",
-      title: "Register",
-      path: "/register"
+    id: "chat",
+    title: "Chat",
+    path: "/chat"
   }
 ];
 

@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <section className="flex items-center justify-center min-h-screen">
+    <section className="flex items-center justify-center min-h-screen mt-20">
       <div className="outer flex flex-col items-center justify-center">
         <div className="section-login flex-col md:p-8 mb-40">
           <h2 className="text-5xl font-bold text-center text-gray-700 mb-20">

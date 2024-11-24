@@ -41,7 +41,7 @@ const Register = () => {
     };
 
     return (
-        <section className="flex items-center justify-center min-h-screen">
+        <section className="flex items-center justify-center min-h-screen mt-12">
             <div className="outer flex flex-col md:flex-row items-center justify-center">
                 {/* Registration Form */}
                 <div className="section-registration flex-col p-6 md:p-8 ml-40 mb-10">

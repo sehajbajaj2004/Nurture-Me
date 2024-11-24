@@ -45,27 +45,7 @@ const Navbar = () => {
               <Link to={link.path}>{link.title}</Link>
             </li>
           ))}
-          {/* Chat Button */}
-          <li
-            key="chat"
-            className={`${
-              active === "Chat"
-                ? "text-[#ffed2c]"
-                : "text-[#fff6d4]"
-            } text-[20px] font-medium cursor-pointer`}
-            onClick={() => setActive("Chat")}
-          >
-            <Link to="/Chat">Chat</Link>
-          </li>
 
-          <li key="profile" onClick={() => setActive("profile")}>
-            <Link to="/profile">
-              <img
-                src={profile}
-                className="w-8 object-contain cursor-pointer"
-              />
-            </Link>
-          </li>
         </ul>
       </div>
 

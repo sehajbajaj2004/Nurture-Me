@@ -47,7 +47,7 @@ function Chat() {
   };
 
   return (
-    <div className="p-6 border rounded shadow-lg">
+    <div className="p-6 border rounded shadow-lg mt-28">
       <h2 className="text-2xl font-semibold mb-4">Live Chat</h2>
       <p className="text-gray-500 mb-2">Your Chat ID: {chatId}</p> {/* Display Chat ID */}
       <div className="h-64 overflow-y-scroll border p-2 mb-4">

@@ -35,20 +35,11 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <div className='relative z-0'>
-          <div
-            className="bg-cover bg-no-repeat bg-center h-[100px]"
-          >
-            <Navbar />
-            {/* <Hero />
-            <BreathingTiles/>
-            <EndlessRunner/>
-            <WorkoutWheel/>
-            <ShooterGame/> */}
-          </div>
-        </div>
+            <Navbar/>
 
+            
         <Routes>
+          <Route path = "/" element ={<Hero/>}/>
           <Route path="/Register" element={<Register />} />
           <Route path="/Forum" element={<Forum />} />
           <Route path="/Chat" element={<Chat />} />

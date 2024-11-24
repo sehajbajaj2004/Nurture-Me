@@ -64,7 +64,7 @@ function Forum() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 mt-20">
       {/* Header */}
       <h1 className="text-center text-4xl font-bold mb-10 text-indigo-600">
         Hi <span className="text-yellow-500 ">{username}</span>, What's on your mind?
