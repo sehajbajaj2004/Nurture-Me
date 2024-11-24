@@ -9,6 +9,7 @@ import { userActivities, publicProfileData, privateProfileData } from './constan
 import ProgressOverview from './components/ProgressiveOverview'
 import axios from 'axios'
 import Register from './components/Register'
+import Forum from './components/Forum'
 import UnityViewer from './components/UnityViewer'
 import "./UnityViewer.css";
 
@@ -32,14 +33,15 @@ function App() {
             className="bg-cover bg-no-repeat bg-center h-[100px]"
           >
             <Navbar />
-            <Hero />
-            <UnityViewer/>
+            {/* <Hero />
+            <UnityViewer/> */}
           </div>
         </div>
 
-        {/* <Routes>
+        <Routes>
           <Route path="/Register" element={<Register />} />
-        </Routes> */}
+          <Route path="/Forum" element={<Forum />} />
+        </Routes>
 
         {/* <ProgressOverview /> */}
 
