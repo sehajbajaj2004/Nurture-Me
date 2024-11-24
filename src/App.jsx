@@ -18,6 +18,7 @@ import BreathingTiles from './components/BreathingTiles'
 import EndlessRunner from './components/EndlessRunner'
 import WorkoutWheel from './components/WorkoutWheel'
 import ShooterGame from './components/ShooterGame'
+import MiniGames from './components/MiniGames'
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
           <Route path="/Chat" element={<Chat />} />
           <Route path="/Admin" element={<Admin />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/Mini-games" element={<MiniGames />} />
         </Routes>
 
         {/* <ProgressOverview /> */}

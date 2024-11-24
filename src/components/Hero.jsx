@@ -4,6 +4,8 @@ import { styles } from '../style';
 import { EmojiCanvas } from './canvas';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+import herobg from '../assets/hero-bg-grid.jpg'
+
 const Hero = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -11,7 +13,7 @@ const Hero = () => {
 
     return (
         <>
-            <section className="relative w-full h-[485px] mx-auto mb-28 mt-14">
+            <section className="relative w-full h-[600px] mx-auto mb-28 mt-14 bg-cover bg-center mt-20" style={{ backgroundImage: `url(${herobg})` }}>
                 <div className={`${styles.paddingX} absolute inset-0 top-[55px] max-w-7xl mx-auto flex items-start gap-5`}>
                     <div className="flex flex-row justify-center items-start mt-5 gap-3">
                         <div className="h-[500px] w-[800px] cursor-grab">
@@ -21,7 +23,7 @@ const Hero = () => {
                         <div className="py-28 mx-14">
                             <h1 className="font-black text-black text-[60px] mt-2 leading-tight">
                                 Hi, <span className="text-[#ffde20]">{username}</span>
-                                <br /> How are you doing today?
+                                <br />   How are you doing today?
                             </h1>
                             <h2 className="text-2xl font-bold text-gray-800 mt-[30px]">
                                 Let's Get Started

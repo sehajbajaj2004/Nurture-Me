@@ -63,7 +63,9 @@ const WorkoutWheel = () => {
   return (
     <div>
       {/* Play Button */}
-      <button onClick={openModal} style={{ padding: "10px 20px", fontSize: "16px" }}>
+      <button onClick={openModal} style={{ padding: "10px 20px", fontSize: "16px" }}
+        className="px-6 py-3 bg-yellow-500 text-white font-semibold text-lg rounded-md shadow-md hover:bg-yellow-600 hover:shadow-lg transition-all"
+      >
         Play Game
       </button>
 

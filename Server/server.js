@@ -159,7 +159,7 @@ app.post("/Login", async (req, res) => {
     console.error("Error during login:", error);
     return res.status(500).json("Error during login");
   }
-});
+}); 
 
 // POST endpoint to save questions
 app.post("/saveQuestions", async (req, res) => {

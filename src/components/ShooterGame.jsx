@@ -215,7 +215,7 @@ const EmojiShooterGame = () => {
     const barWidth = CANVAS_WIDTH - 2 * barPadding;
     const filledWidth = (gameState.barValue / CANVAS_WIDTH) * barWidth;
 
-    ctx.fillStyle = '#444';
+    ctx.fillStyle = '#fffff';
     ctx.fillRect(barPadding, 10, barWidth, barHeight);
 
     ctx.fillStyle = gameState.barValue > 600 ? 'green' : 
@@ -301,7 +301,7 @@ const EmojiShooterGame = () => {
   }, [gameState, controls]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
       <div className="mb-4 text-white text-lg">
         Use Arrow Keys to move, Spacebar to shoot
       </div>
