@@ -11,7 +11,11 @@ import axios from 'axios'
 import Register from './components/Register'
 import Forum from './components/Forum'
 import UnityViewer from './components/UnityViewer'
+import Forum from './components/Forum'
+import Chat from './components/Chat'
+import Admin from './components/AdminPage'
 import "./UnityViewer.css";
+import AdminPage from './components/AdminPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -40,8 +44,7 @@ function App() {
 
         <Routes>
           <Route path="/Register" element={<Register />} />
-          <Route path="/Forum" element={<Forum />} />
-        </Routes>
+        </Routes> */}
 
         {/* <ProgressOverview /> */}
 

@@ -1,29 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:8080");
+import socket from "../socket"; // Singleton socket instance
 
 function AdminPage() {
   const [activeChats, setActiveChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
     socket.on("active_chats", (chats) => {
       setActiveChats(chats);
     });
 
-    return () => socket.off("active_chats");
-  }, []);
+    socket.on("message", (msg) => {
+      if (msg.id === selectedChat) {
+        setMessages((prevMessages) => [...prevMessages, msg]);
+      }
+    });
+
+    socket.on("chat_history", ({ chatId, history }) => {
+      if (chatId === selectedChat) {
+        setMessages(history); // Load chat history into the messages state
+      }
+    });
+
+    return () => {
+      socket.off("active_chats");
+      socket.off("message");
+      socket.off("chat_history");
+    };
+  }, [selectedChat]);
 
   const handleChatClick = (chatId) => {
     setSelectedChat(chatId);
+    socket.emit("fetch_chat", chatId); // Request chat history from server
+  };
 
-    // Simulating fetching chat messages
-    socket.emit("fetch_messages", chatId);
-    socket.on("chat_messages", (msgs) => {
-      setMessages(msgs);
-    });
+  const sendMessage = () => {
+    if (newMessage.trim() === "") return;
+
+    const msgObj = { id: selectedChat, message: newMessage, sender: "admin" };
+    socket.emit("message", msgObj); // Send the message
+    setMessages((prevMessages) => [...prevMessages, msgObj]); // Update local state
+    setNewMessage("");
   };
 
   return (
@@ -48,14 +67,37 @@ function AdminPage() {
           <h2 className="text-xl font-semibold mb-4">
             Messages for Chat: {selectedChat || "Select a Chat"}
           </h2>
-          {selectedChat ? (
-            <ul className="list-disc pl-6">
-              {messages.map((msg, index) => (
-                <li key={index}>{msg.message}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>Select a chat to view messages.</p>
+          {selectedChat && (
+            <div>
+              <div className="h-64 overflow-y-scroll border p-2 mb-4">
+                {messages.map((msg, index) => (
+                  <p
+                    key={index}
+                    className={`p-2 my-2 rounded ${
+                      msg.sender === "admin" ? "bg-blue-100" : "bg-gray-100"
+                    }`}
+                  >
+                    {msg.message}{" "}
+                    <span className="text-xs text-gray-500">
+                      ({msg.sender || "user"})
+                    </span>
+                  </p>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type your message..."
+                className="border w-full p-2"
+              />
+              <button
+                onClick={sendMessage}
+                className="mt-2 bg-green-500 text-white px-4 py-2"
+              >
+                Send
+              </button>
+            </div>
           )}
         </div>
       </div>
