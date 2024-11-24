@@ -223,7 +223,7 @@ const EmojiShooterGame = () => {
     ctx.fillRect(barPadding, 10, filledWidth, barHeight);
 
     // Draw score with better visibility
-    ctx.fillStyle = '#fff';  // Changed to white for better visibility
+    ctx.fillStyle = '#000';  // Changed to white for better visibility
     ctx.font = 'bold 20px Arial';  // Made font bold
     ctx.fillText(`Score: ${gameState.score}`, CANVAS_WIDTH/2 - 40, 32);
 
