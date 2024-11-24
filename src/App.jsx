@@ -10,11 +10,14 @@ import ProgressOverview from './components/ProgressiveOverview'
 import axios from 'axios'
 import Register from './components/Register'
 import Forum from './components/Forum'
-import UnityViewer from './components/UnityViewer'
 import Chat from './components/Chat'
 import Admin from './components/AdminPage'
 import "./UnityViewer.css";
 import Login from './components/Login'
+import BreathingTiles from './components/BreathingTiles'
+import EndlessRunner from './components/EndlessRunner'
+import WorkoutWheel from './components/WorkoutWheel'
+import ShooterGame from './components/ShooterGame'
 
 
 function App() {
@@ -32,17 +35,11 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <div className='relative z-0'>
-          <div
-            className="bg-cover bg-no-repeat bg-center h-[100px]"
-          >
-            <Navbar />
-            {/* <Hero />
-            <UnityViewer/> */}
-          </div>
-        </div>
+            <Navbar/>
 
+            
         <Routes>
+          <Route path = "/" element ={<Hero/>}/>
           <Route path="/Register" element={<Register />} />
           <Route path="/Forum" element={<Forum />} />
           <Route path="/Chat" element={<Chat />} />
