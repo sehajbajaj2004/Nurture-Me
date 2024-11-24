@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
 const questionSchema = new mongoose.Schema({
   username: { type: String, required: true },
   questions: [{ type: String }],
-  timestamp: { type: Date, default: Date.now }
+  timestamp: { type: Date, default: Date.now },
 });
 
 // Create the Question model
@@ -62,37 +62,35 @@ app.use(express.json()); // Parse JSON requests
 // Active chats and chat history
 let activeChats = [];
 const chatMessages = {}; // Chat history for each socket ID
+const userSessions = {}; // Map usernames to their socket IDs
 
-// WebSocket Connection Handling
+// WebSocket connection
 io.on("connection", (socket) => {
-  const isAdmin = socket.handshake.query.isAdmin === "true"; // Determine if the client is an admin
+  const isAdmin = socket.handshake.query.isAdmin === "true";
 
-  if (isAdmin) {
-    console.log(`Admin connected: ${socket.id}`);
-  } else {
-    console.log(`User connected: ${socket.id}`);
-
-    // Add user to activeChats
-    if (!activeChats.includes(socket.id)) {
-      activeChats.push(socket.id);
-      chatMessages[socket.id] = chatMessages[socket.id] || []; // Initialize chat history
-      io.emit("active_chats", activeChats); // Notify all clients about active chats
-    }
-  }
-
-  // Handle incoming messages
   socket.on("message", (msg) => {
     const { id, message, sender } = msg;
 
-    // Store message in chat history
     if (!chatMessages[id]) chatMessages[id] = [];
     chatMessages[id].push(msg);
 
-    // Broadcast message
     if (sender === "admin") {
-      io.to(id).emit("message", msg); // Send to a specific user
+      io.to(id).emit("message", msg); // Send to the specific user
     } else {
-      io.emit("message", msg); // Send to all admins
+      io.emit("message_to_admin", msg); // Notify admins in real-time
+    }
+  });
+
+  socket.on("user_login", (username) => {
+    if (!isAdmin) {
+      console.log(`Received user_login from ${username}`);
+      // Prevent duplicate active chats
+      if (!activeChats.some((chat) => chat.username === username)) {
+        activeChats.push({ username, socketId: socket.id });
+        chatMessages[socket.id] = chatMessages[socket.id] || [];
+        io.emit("active_chats", activeChats);
+        console.log("Updated activeChats:", activeChats);
+      }
     }
   });
 
@@ -104,12 +102,17 @@ io.on("connection", (socket) => {
 
   // Handle disconnection
   socket.on("disconnect", () => {
-    if (!isAdmin) {
-      console.log(`User disconnected: ${socket.id}`);
-      activeChats = activeChats.filter((id) => id !== socket.id);
-      io.emit("active_chats", activeChats);
-    } else {
+    if (isAdmin) {
       console.log(`Admin disconnected: ${socket.id}`);
+    } else {
+      const username = Object.keys(userSessions).find(
+        (key) => userSessions[key] === socket.id
+      );
+      if (username) delete userSessions[username];
+
+      console.log(`User disconnected: ${socket.id}`);
+      activeChats = activeChats.filter((chat) => chat.socketId !== socket.id);
+      io.emit("active_chats", activeChats);
     }
   });
 });
@@ -119,19 +122,17 @@ app.post("/Register", async (req, res) => {
   const { username, email, phone, password } = req.body;
 
   try {
-    // Check if a user with the provided email already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return res.json("exist"); // User already exists
     }
 
-    // Save the new user to the database
     const newUser = new User({
       username,
       email,
       phone,
-      password, // Remember: Hash passwords for security in production
+      password,
     });
 
     await newUser.save();
@@ -147,7 +148,6 @@ app.post("/Login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Check if a user with the provided username and password exists
     const existingUser = await User.findOne({ username, password });
 
     if (existingUser) {
@@ -166,19 +166,13 @@ app.post("/saveQuestions", async (req, res) => {
   const { username, questions } = req.body;
 
   try {
-    // Find existing questions for the user
     let userQuestions = await Question.findOne({ username });
 
     if (userQuestions) {
-      // Update existing questions
       userQuestions.questions = questions;
       await userQuestions.save();
     } else {
-      // Create new questions document
-      userQuestions = new Question({
-        username,
-        questions
-      });
+      userQuestions = new Question({ username, questions });
       await userQuestions.save();
     }
 

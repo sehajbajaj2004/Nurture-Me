@@ -39,6 +39,13 @@ function Chat() {
     setNewMessage(""); // Clear the input field
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default behavior for Enter key
+      sendMessage();
+    }
+  };
+
   return (
     <div className="p-6 border rounded shadow-lg">
       <h2 className="text-2xl font-semibold mb-4">Live Chat</h2>
@@ -60,6 +67,7 @@ function Chat() {
         type="text"
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
+        onKeyDown={handleKeyDown} // Add Enter key support
         placeholder="Type your message..."
         className="border w-full p-2"
       />
