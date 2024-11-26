@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Profile from './components/Profile';
@@ -24,7 +24,6 @@ import { UserProvider, UserContext } from "./context/UserContext";
 function App() {
   const [count, setCount] = useState(0);
 
-  // Fetch example API data
   const fetchAPI = async () => {
     const response = await axios.get("http://localhost:8080/api");
     console.log(response.data.fruits);
@@ -37,14 +36,44 @@ function App() {
   // Protected route wrapper
   const ProtectedRoute = ({ children }) => {
     const { user } = useContext(UserContext);
-    return user ? children : <Navigate to="/Login" />;
+
+    // Retrieve saved route from localStorage
+    const location = useLocation();
+    const savedPath = localStorage.getItem('currentPath');
+
+    useEffect(() => {
+      if (location.pathname !== savedPath) {
+        localStorage.setItem('currentPath', location.pathname);
+      }
+    }, [location.pathname]);
+
+    if (!user) {
+      return <Navigate to="/Login" />;
+    }
+
+    return children;
   };
 
   // Public route wrapper for login
   const PublicRoute = ({ children }) => {
     const { user } = useContext(UserContext);
-    return user ? <Navigate to="/" /> : children;
+
+    // If the user is logged in, navigate to the last visited route
+    const savedPath = localStorage.getItem('currentPath');
+    if (user) {
+      return <Navigate to={savedPath || '/'} />;
+    }
+
+    return children;
   };
+
+  // Handle page refresh by restoring the route
+  useEffect(() => {
+    const savedPath = localStorage.getItem('currentPath');
+    if (savedPath && window.location.pathname !== savedPath) {
+      window.history.replaceState(null, '', savedPath);
+    }
+  }, []);
 
   return (
     <UserProvider>

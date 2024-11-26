@@ -1,14 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const http = require("http"); // For creating an HTTP server
-const { Server } = require("socket.io"); // Importing Socket.IO
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
-const server = http.createServer(app); // Create an HTTP server
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Adjust to your frontend URL
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -20,12 +20,8 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => {
-    console.log("MongoDB connected successfully!");
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // Define the User Schema
 const userSchema = new mongoose.Schema({
@@ -35,74 +31,75 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
+// Define the Question Schema
 const questionSchema = new mongoose.Schema({
+  question: { type: String, required: true },
   username: { type: String, required: true },
-  questions: [{ type: String }],
-  timestamp: { type: Date, default: Date.now }
+  answers: [
+    {
+      username: { type: String, required: true },
+      answer: { type: String, required: true },
+      timestamp: { type: Date, default: Date.now },
+    },
+  ],
+  type: { type: String, required: true, enum: ["FAQ", "User"], default: "FAQ" },
+  timestamp: { type: Date, default: Date.now },
 });
 
-// Create the Question model
-const Question = mongoose.model("Question", questionSchema);
-
-// Create the User model
+// Create the models
 const User = mongoose.model("User", userSchema);
+const Question = mongoose.model("Question", questionSchema);
 
 // CORS Configuration
 app.use(
   cors({
-    origin: "http://localhost:5173", // Adjust to your frontend URL
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   })
 );
 
 // Middleware
-app.use(express.json()); // Parse JSON requests
+app.use(express.json());
 
 // Active chats and chat history
 let activeChats = [];
-const chatMessages = {}; // Chat history for each socket ID
+const chatMessages = {};
 
 // WebSocket Connection Handling
 io.on("connection", (socket) => {
-  const isAdmin = socket.handshake.query.isAdmin === "true"; // Determine if the client is an admin
+  const isAdmin = socket.handshake.query.isAdmin === "true";
 
   if (isAdmin) {
     console.log(`Admin connected: ${socket.id}`);
   } else {
     console.log(`User connected: ${socket.id}`);
 
-    // Add user to activeChats
     if (!activeChats.includes(socket.id)) {
       activeChats.push(socket.id);
-      chatMessages[socket.id] = chatMessages[socket.id] || []; // Initialize chat history
-      io.emit("active_chats", activeChats); // Notify all clients about active chats
+      chatMessages[socket.id] = chatMessages[socket.id] || [];
+      io.emit("active_chats", activeChats);
     }
   }
 
-  // Handle incoming messages
   socket.on("message", (msg) => {
     const { id, message, sender } = msg;
 
-    // Store message in chat history
     if (!chatMessages[id]) chatMessages[id] = [];
     chatMessages[id].push(msg);
 
-    // Broadcast message
     if (sender === "admin") {
-      io.to(id).emit("message", msg); // Send to a specific user
+      io.to(id).emit("message", msg);
     } else {
-      io.emit("message", msg); // Send to all admins
+      io.emit("message", msg);
     }
   });
 
-  // Fetch chat history
   socket.on("fetch_chat", (chatId) => {
     const history = chatMessages[chatId] || [];
     socket.emit("chat_history", { chatId, history });
   });
 
-  // Handle disconnection
   socket.on("disconnect", () => {
     if (!isAdmin) {
       console.log(`User disconnected: ${socket.id}`);
@@ -114,92 +111,108 @@ io.on("connection", (socket) => {
   });
 });
 
-// POST /Register endpoint
+// Seeding FAQs
+app.post("/seedFAQs", async (req, res) => {
+  const faqs = [
+    { question: "How to reduce stress?", username: "FAQ", type: "FAQ" },
+    { question: "Tips for better sleep?", username: "FAQ", type: "FAQ" },
+    { question: "Managing anxiety?", username: "FAQ", type: "FAQ" },
+    { question: "How to eat healthily?", username: "FAQ", type: "FAQ" },
+    { question: "Best exercises for beginners?", username: "FAQ", type: "FAQ" },
+    { question: "Staying hydrated tips?", username: "FAQ", type: "FAQ" },
+  ];
+
+  try {
+    const existingFAQs = await Question.find({ type: "FAQ" });
+    if (existingFAQs.length === 0) {
+      await Question.insertMany(faqs);
+      return res.json({ success: true, message: "FAQs added successfully" });
+    }
+    res.json({ success: true, message: "FAQs already exist" });
+  } catch (error) {
+    console.error("Error seeding FAQs:", error);
+    res.status(500).json({ success: false, message: "Error seeding FAQs" });
+  }
+});
+
+// Register
 app.post("/Register", async (req, res) => {
   const { username, email, phone, password } = req.body;
 
   try {
-    // Check if a user with the provided email already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.json("exist"); // User already exists
+      return res.json("exist");
     }
 
-    // Save the new user to the database
-    const newUser = new User({
-      username,
-      email,
-      phone,
-      password, // Remember: Hash passwords for security in production
-    });
-
+    const newUser = new User({ username, email, phone, password });
     await newUser.save();
-    return res.json("nonexist"); // New user created
+    return res.json("nonexist");
   } catch (error) {
     console.error("Error inserting data:", error);
     return res.status(500).json("Error saving user");
   }
 });
 
-// POST /Login endpoint
+// Login
 app.post("/Login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Check if a user with the provided username and password exists
     const existingUser = await User.findOne({ username, password });
 
     if (existingUser) {
-      return res.json("success"); // Login successful
+      return res.json("success");
     } else {
-      return res.json("failure"); // Invalid credentials
+      return res.json("failure");
     }
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json("Error during login");
   }
-}); 
+});
 
-// POST endpoint to save questions
+// Save Question
 app.post("/saveQuestions", async (req, res) => {
-  const { username, questions } = req.body;
+  const { username, question, type } = req.body;
 
   try {
-    // Find existing questions for the user
-    let userQuestions = await Question.findOne({ username });
-
-    if (userQuestions) {
-      // Update existing questions
-      userQuestions.questions = questions;
-      await userQuestions.save();
-    } else {
-      // Create new questions document
-      userQuestions = new Question({
-        username,
-        questions
-      });
-      await userQuestions.save();
-    }
-
-    res.json({ success: true, message: "Questions saved successfully" });
+    const newQuestion = new Question({ username, question, type });
+    await newQuestion.save();
+    res.json({ success: true, newQuestionId: newQuestion._id });
   } catch (error) {
-    console.error("Error saving questions:", error);
-    res.status(500).json({ success: false, message: "Error saving questions" });
+    console.error("Error saving question:", error);
+    res.status(500).json({ success: false, message: "Error saving question" });
   }
 });
 
-// GET endpoint to retrieve questions
-app.get("/getQuestions/:username", async (req, res) => {
-  const { username } = req.params;
+// Add Answer
+app.post("/addAnswer", async (req, res) => {
+  const { questionId, username, answer } = req.body;
 
   try {
-    const userQuestions = await Question.findOne({ username });
-    if (userQuestions) {
-      res.json({ success: true, questions: userQuestions.questions });
-    } else {
-      res.json({ success: true, questions: [] });
+    const question = await Question.findById(questionId);
+
+    if (!question) {
+      return res.status(404).json({ success: false, message: "Question not found" });
     }
+
+    question.answers.push({ username, answer });
+    await question.save();
+
+    res.json({ success: true, message: "Answer added successfully" });
+  } catch (error) {
+    console.error("Error adding answer:", error);
+    res.status(500).json({ success: false, message: "Error adding answer" });
+  }
+});
+
+// Get Questions
+app.get("/getQuestions", async (req, res) => {
+  try {
+    const questions = await Question.find().sort({ timestamp: -1 });
+    res.json({ success: true, questions });
   } catch (error) {
     console.error("Error retrieving questions:", error);
     res.status(500).json({ success: false, message: "Error retrieving questions" });

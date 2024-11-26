@@ -1,98 +1,79 @@
-import axios from "axios";
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext"; // Import UserContext
+import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const Login = () => {
-    const { login } = useContext(UserContext); // Access the login function from UserContext
-    const navigate = useNavigate();
+  const { login } = useContext(UserContext);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-    // State variables for form fields
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:8080/Login", {
+        username,
+        password,
+      });
 
-    // Form submission handler
-    const submit = async (e) => {
-        e.preventDefault(); // Prevent the default form submission
+      if (res.data === "success") {
+        login({ username }); // Save user to context and localStorage
+        navigate("/forum");
+      } else {
+        alert("Invalid username or password");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
 
-        try {
-            // Sending a POST request to the backend
-            const res = await axios.post("http://localhost:8080/Login", {
-                username,
-                password,
-            });
-
-            if (res.data === "success") {
-                // Login successful: Save the username in context and localStorage
-                login({ username });
-                navigate("/"); // Navigate to the home page after login
-            } else {
-                // Invalid credentials: Show error message
-                alert("Invalid username or password. Please try again.");
-            }
-        } catch (error) {
-            alert("Something went wrong. Please try again.");
-            console.error("Error during login:", error);
-        }
-    };
-
-    return (
-        <section className="flex items-center justify-center min-h-screen mt-28">
-            <div className="outer flex flex-col items-center justify-center">
-                {/* Login Form */}
-                <div className="section-login flex-col md:p-8 mb-40">
-                    <h2 className="text-5xl font-bold text-center text-gray-700 mb-20">Login</h2>
-                    <form className="space-y-4" onSubmit={submit}>
-                        {/* Username */}
-                        <div className="flex flex-col">
-                            <label
-                                htmlFor="username"
-                                className="text-sm font-medium text-gray-600"
-                            >
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                id="username"
-                                placeholder="Enter your username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                                className="mt-1 w-[450px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
-                            />
-                        </div>
-
-                        {/* Password */}
-                        <div className="flex flex-col">
-                            <label
-                                htmlFor="password"
-                                className="text-sm font-medium text-gray-600"
-                            >
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                placeholder="Enter your password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="mt-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
-                            />
-                        </div>
-
-                        {/* Submit Button */}
-                        <button
-                            type="submit"
-                            className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-                        >
-                            Login
-                        </button>
-                    </form>
-                </div>
+  return (
+    <section className="flex items-center justify-center min-h-screen mt-28">
+      <div className="outer flex flex-col items-center justify-center">
+        <div className="section-login flex-col md:p-8 mb-40">
+          <h2 className="text-5xl font-bold text-center text-gray-700 mb-20">Login</h2>
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <div className="flex flex-col">
+              <label htmlFor="username" className="text-sm font-medium text-gray-600">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="mt-1 w-[450px] px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+              />
             </div>
-        </section>
-    );
+            <div className="flex flex-col">
+              <label htmlFor="password" className="text-sm font-medium text-gray-600">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="mt-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-300"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+            >
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default Login;

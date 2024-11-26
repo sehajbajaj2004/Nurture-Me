@@ -12,11 +12,6 @@ export const navLinks = [
       path: "/mini-games"
   },
   {
-      id: "about",
-      title: "About",
-      path: "/about"
-  },
-  {
     id: "chat",
     title: "Chat",
     path: "/chat"
