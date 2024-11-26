@@ -215,7 +215,7 @@ const EmojiShooterGame = () => {
     const barWidth = CANVAS_WIDTH - 2 * barPadding;
     const filledWidth = (gameState.barValue / CANVAS_WIDTH) * barWidth;
 
-    ctx.fillStyle = '#fffff';
+    ctx.fillStyle = '#ffff';
     ctx.fillRect(barPadding, 10, barWidth, barHeight);
 
     ctx.fillStyle = gameState.barValue > 600 ? 'green' : 
@@ -229,14 +229,20 @@ const EmojiShooterGame = () => {
 
     // Draw game over screen
     if (gameState.gameOver) {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';  // Semi-transparent background
+      // Draw semi-transparent background
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';  // Adjusted for transparency
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      
-      ctx.fillStyle = '#fff';
+    
+      // Draw "Game Over" text
+      ctx.fillStyle = '#ffff';  // White text for visibility
       ctx.font = '40px Arial';
-      ctx.fillText('Game Over', CANVAS_WIDTH / 2 - 100, CANVAS_HEIGHT / 2);
-      ctx.fillText(`Final Score: ${gameState.score}`, CANVAS_WIDTH / 2 - 130, CANVAS_HEIGHT / 2 + 50);
-    }
+      ctx.textAlign = 'center';
+      ctx.fillText('Game Over', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+    
+      // Draw Final Score
+      ctx.font = '30px Arial';  // Slightly smaller font for the score
+      ctx.fillText(`Final Score: ${gameState.score}`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 30);
+    }    
   };
 
   useEffect(() => {
