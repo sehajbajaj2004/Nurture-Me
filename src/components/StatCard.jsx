@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
-const StatCard = ({ icon, label, value, goal, unit, onGoalChange }) => {
+const StatCard = ({ icon, label, value, goal, unit, onGoalChange, onValueChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newGoal, setNewGoal] = useState(goal);
+  const [newValue, setNewValue] = useState(value);
 
   // Calculate progress percentage (value/goal * 100), with a fallback for no goal set
   const progress = value && goal && !isNaN(value) && !isNaN(goal)
@@ -10,7 +11,12 @@ const StatCard = ({ icon, label, value, goal, unit, onGoalChange }) => {
     : 0;
 
   const handleGoalChange = () => {
-    onGoalChange(newGoal);
+    onGoalChange(newGoal); // Update goal
+    setIsEditing(false);
+  };
+
+  const handleValueChange = () => {
+    onValueChange(newValue); // Update value
     setIsEditing(false);
   };
 
@@ -26,33 +32,53 @@ const StatCard = ({ icon, label, value, goal, unit, onGoalChange }) => {
         {value} {unit} / {goal} {unit}
       </p>
 
-      {/* Editable Goal */}
+      {/* Editable Goal and Value */}
       {isEditing ? (
-        <div className="flex items-center mb-2">
-          {label === 'Mood Overview' ? (
-            <select
-              value={newGoal}
-              onChange={handleMoodChange}
-              className="border rounded-lg px-2 py-1 text-sm w-24"  // Smaller size
-            >
-              <option value="Be Happy">Be Happy</option>
-              <option value="Stay Positive">Stay Positive</option>
-              <option value="Grind">Grind</option>
-            </select>
-          ) : (
+        <div className="flex flex-col items-center mb-2">
+          <div className="flex items-center space-x-2">
+            {/* Goal input */}
             <input
-              type="text"
-              className="border rounded-lg px-2 py-1 text-sm w-16" // Smaller size
+              type="number"
+              className="border rounded-lg px-2 py-1 text-sm w-20"
               value={newGoal}
               onChange={(e) => setNewGoal(e.target.value)}
             />
-          )}
-          <button onClick={handleGoalChange} className="ml-2 text-blue-500 text-sm">
-            Save
-          </button>
-          <button onClick={() => setIsEditing(false)} className="ml-2 text-red-500 text-sm">
-            Cancel
-          </button>
+            <span>{unit}</span>
+          </div>
+
+          <div className="flex items-center space-x-2 mt-2">
+            {/* Value input */}
+            <button
+              onClick={() => setNewValue(Math.max(0, newValue - 1))}
+              className="px-2 py-1 bg-gray-300 rounded-lg text-sm"
+            >
+              ↓
+            </button>
+            <input
+              type="number"
+              className="border rounded-lg px-2 py-1 text-sm w-20"
+              value={newValue}
+              onChange={(e) => setNewValue(e.target.value)}
+            />
+            <button
+              onClick={() => setNewValue(Math.min(newValue + 1, newGoal))}
+              className="px-2 py-1 bg-gray-300 rounded-lg text-sm"
+            >
+              ↑
+            </button>
+          </div>
+
+          <div className="flex items-center mt-2">
+            <button onClick={handleGoalChange} className="ml-2 text-blue-500 text-sm">
+              Save Goal
+            </button>
+            <button onClick={handleValueChange} className="ml-2 text-blue-500 text-sm">
+              Save Value
+            </button>
+            <button onClick={() => setIsEditing(false)} className="ml-2 text-red-500 text-sm">
+              Cancel
+            </button>
+          </div>
         </div>
       ) : (
         <div className="flex items-center mb-2">
