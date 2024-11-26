@@ -1,7 +1,10 @@
 import React from "react";
+import ProgressOverview from "./ProgressiveOverview";
 
 const Profile = ({ name, university, bio, posts, followers, following, activities }) => {
   return (
+
+    <>
     <div className="max-w-4xl mx-auto mt-28 p-6 bg-white shadow-md rounded-lg ">
       <div className="flex items-center space-x-6">
         {/* Profile Image */}
@@ -55,6 +58,10 @@ const Profile = ({ name, university, bio, posts, followers, following, activitie
         </ul>
       </div>
     </div>
+
+    <ProgressOverview />
+    </>
+    
   );
 };
 
