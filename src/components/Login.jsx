@@ -1,9 +1,11 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext"; // Import UserContext
 
 const Login = () => {
-    const navigate = useNavigate(); // Correctly using the useNavigate hook
+    const { login } = useContext(UserContext); // Access the login function from UserContext
+    const navigate = useNavigate();
 
     // State variables for form fields
     const [username, setUsername] = useState("");
@@ -21,8 +23,9 @@ const Login = () => {
             });
 
             if (res.data === "success") {
-                // Login successful: Navigate to the Forum page with the username in state
-                navigate("/Forum", { state: { id: username } });
+                // Login successful: Save the username in context and localStorage
+                login({ username });
+                navigate("/"); // Navigate to the home page after login
             } else {
                 // Invalid credentials: Show error message
                 alert("Invalid username or password. Please try again.");
