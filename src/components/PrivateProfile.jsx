@@ -1,73 +1,19 @@
-// import React from "react";
-
-// const PrivateProfile = ({ name, university, photo, height, weight, mood, habits, suggestions }) => {
-//   return (
-//     <div className="max-w-4xl mx-auto mt-20 p-6 bg-[#FFFFFF] shadow-lg rounded-lg border ">
-//       <div className="flex items-center space-x-6">
-//         {/* Profile Image */}
-//         <div className="w-32 h-32 bg-[#86D5F4] rounded-full overflow-hidden border-4 border-[#33CEC5]">
-//           <img
-//             src={photo}
-//             alt="Profile"
-//             className="object-cover w-full h-full"
-//           />
-//         </div>
-//         {/* Profile Info */}
-//         <div>
-//           <h1 className="text-3xl font-semibold text-[#353535]">{name}</h1>
-//           <p className="text-lg text-[#33CEC5]">{university}</p>
-//         </div>
-//       </div>
-//         {/*  Personal information */ }
-//       <h2 className="mt-6 text-2xl font-semibold text-[#353535]">Personal Information</h2>
-//       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-//         <div className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
-//           <h3 className="text-lg font-semibold text-[#353535]">Height</h3>
-//           <p className="text-xl text-[#353535]">{height} cm</p>
-//         </div>
-//         <div className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
-//           <h3 className="text-lg font-semibold text-[#353535]">Weight</h3>
-//           <p className="text-xl text-[#353535]">{weight} kg</p>
-//         </div>
-//         <div className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
-//           <h3 className="text-lg font-semibold text-[#353535]">Mood</h3>
-//           <p className="text-xl text-[#353535]">{mood}</p>
-//         </div>
-//         <div className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
-//           <h3 className="text-lg font-semibold text-[#353535]">Habits</h3>
-//           <ul className="list-disc pl-5 text-[#353535]">
-//             {habits.map((habit, index) => (
-//               <li key={index}>{habit}</li>
-//             ))}
-//           </ul>
-//         </div>
-//       </div>
-
-//       <div className="mt-8">
-//         <h2 className="text-2xl font-semibold text-[#353535]">Suggestions</h2>
-//         <ul className="mt-4 space-y-2">
-//           {suggestions.map((suggestion, index) => (
-//             <li key={index} className="bg-[#86D5F4] p-4 rounded-lg shadow-sm border border-[#E0E0E0] text-[#353535]">
-//               {suggestion}
-//             </li>
-//           ))}
-//         </ul>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PrivateProfile;
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ProgressOverview from "./ProgressiveOverview"; // Import ProgressOverview
 
-const moodOptions = ["Happy", "Sad", "Angry", "Excited"];
+const moodSuggestions = {
+  Happy: ["Keep a gratitude journal", "Go for a walk in nature", "Plan a fun activity"],
+  Sad: ["Talk to a trusted friend", "Write your feelings in a journal", "Watch a comforting movie"],
+  Angry: ["Practice deep breathing", "Exercise to release tension", "Try a relaxation technique"],
+  Excited: ["Set realistic goals", "Share your excitement with others", "Channel energy into a project"],
+};
 
 const PrivateProfile = () => {
   const [profile, setProfile] = useState(null); // Store profile data
   const [editing, setEditing] = useState(false); // Toggle edit mode
   const [updatedProfile, setUpdatedProfile] = useState({}); // Store updated profile fields
+  const [suggestions, setSuggestions] = useState([]); // Store mood-based suggestions
   const username = localStorage.getItem("username"); // Assume username is stored in localStorage after login
 
   useEffect(() => {
@@ -76,6 +22,7 @@ const PrivateProfile = () => {
         const response = await axios.get(`http://localhost:8080/profile/${username}`);
         if (response.data.success) {
           setProfile(response.data.profile);
+          setSuggestions(moodSuggestions[response.data.profile.mood]); // Set initial suggestions based on mood
         } else {
           console.error("Profile not found or error in response.");
         }
@@ -110,23 +57,6 @@ const PrivateProfile = () => {
     }
   };
 
-  const handleMoodChange = async (e) => {
-    const newMood = e.target.value;
-    try {
-      const response = await axios.put(`http://localhost:8080/profile/${username}`, {
-        ...profile,
-        mood: newMood,
-      });
-      if (response.data.success) {
-        setProfile(response.data.profile); // Update profile with new suggestions
-      } else {
-        console.error("Failed to update mood.");
-      }
-    } catch (err) {
-      console.error("Error updating mood:", err);
-    }
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUpdatedProfile((prev) => ({
@@ -135,23 +65,56 @@ const PrivateProfile = () => {
     }));
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setUpdatedProfile((prev) => ({
+        ...prev,
+        photo: reader.result,
+      }));
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleMoodChange = (e) => {
+    const newMood = e.target.value;
+    setUpdatedProfile((prev) => ({
+      ...prev,
+      mood: newMood,
+    }));
+    setSuggestions(moodSuggestions[newMood]); // Update suggestions based on mood
+  };
+
   if (!profile) {
     return <p className="text-center mt-10 text-lg font-semibold">Loading profile...</p>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-20 p-6 bg-[#FFFFFF] shadow-lg rounded-lg border">
-      <div className="flex items-center space-x-6">
-        {/* Profile Image */}
-        <div className="w-32 h-32 bg-[#86D5F4] rounded-full overflow-hidden border-4 border-[#33CEC5]">
-          <img
-            src={profile.photo || "https://via.placeholder.com/150"}
-            alt="Profile"
-            className="object-cover w-full h-full"
-          />
-        </div>
-        {/* Profile Info */}
-        <div>
+    <div className="max-w-6xl mx-auto mt-20 p-6 bg-[#FFFFFF] shadow-lg rounded-lg border">
+      {/* Profile Section */}
+      <div className="flex justify-center items-center mb-8 space-x-6">
+        {/* Profile Image and Name */}
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-32 h-32 bg-[#86D5F4] rounded-full overflow-hidden border-4 border-[#33CEC5]">
+            {editing ? (
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="border p-2"
+              />
+            ) : (
+              <img
+                src={profile.photo || "https://via.placeholder.com/150"}
+                alt="Profile"
+                className="object-cover w-full h-full"
+              />
+            )}
+          </div>
+
           <h1 className="text-3xl font-semibold text-[#353535]">
             {editing ? (
               <input
@@ -159,20 +122,20 @@ const PrivateProfile = () => {
                 name="name"
                 value={updatedProfile.name || ""}
                 onChange={handleChange}
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full text-center"
               />
             ) : (
               profile.name
             )}
           </h1>
-          <p className="text-lg text-[#33CEC5]">
+          <p className="text-lg text-[#33CEC5] text-center">
             {editing ? (
               <input
                 type="text"
                 name="university"
                 value={updatedProfile.university || ""}
                 onChange={handleChange}
-                className="border rounded p-2 w-full"
+                className="border rounded p-2 w-full text-center"
               />
             ) : (
               profile.university
@@ -181,58 +144,63 @@ const PrivateProfile = () => {
         </div>
       </div>
 
-      {/* Personal Information */}
+      {/* Progress Overview Section */}
+      <div className="flex justify-center space-x-6 mb-8">
+        <ProgressOverview />
+      </div>
+
+      {/* Personal Information Section */}
       <h2 className="mt-6 text-2xl font-semibold text-[#353535]">Personal Information</h2>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
-          <h3 className="text-lg font-semibold text-[#353535]">Height (cm)</h3>
-          {editing ? (
-            <input
-              type="number"
-              name="height"
-              value={updatedProfile.height || ""}
-              onChange={handleChange}
-              className="border rounded p-2 w-full"
-            />
-          ) : (
-            <p className="text-xl text-[#353535]">{profile.height} cm</p>
-          )}
-        </div>
-        <div className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
-          <h3 className="text-lg font-semibold text-[#353535]">Weight (kg)</h3>
-          {editing ? (
-            <input
-              type="number"
-              name="weight"
-              value={updatedProfile.weight || ""}
-              onChange={handleChange}
-              className="border rounded p-2 w-full"
-            />
-          ) : (
-            <p className="text-xl text-[#353535]">{profile.weight} kg</p>
-          )}
-        </div>
+        {["height", "weight"].map((field) => (
+          <div key={field} className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
+            <h3 className="text-lg font-semibold text-[#353535] capitalize">{field}</h3>
+            {editing ? (
+              <input
+                type="text"
+                name={field}
+                value={updatedProfile[field] || ""}
+                onChange={handleChange}
+                className="border rounded p-2 w-full"
+              />
+            ) : (
+              <p className="text-xl text-[#353535]">
+                {field === "height"
+                  ? `${profile[field]} cm`
+                  : field === "weight"
+                  ? `${profile[field]} kg`
+                  : profile[field]}
+              </p>
+            )}
+          </div>
+        ))}
+
+        {/* Mood Section */}
         <div className="p-4 bg-[#FFEC95] rounded-lg shadow-sm border border-[#E0E0E0]">
           <h3 className="text-lg font-semibold text-[#353535]">Mood</h3>
-          <select
-            value={profile.mood}
-            onChange={handleMoodChange}
-            className="border rounded p-2 w-full bg-white"
-          >
-            {moodOptions.map((mood) => (
-              <option key={mood} value={mood}>
-                {mood}
-              </option>
-            ))}
-          </select>
+          {editing ? (
+            <select
+              name="mood"
+              value={updatedProfile.mood || ""}
+              onChange={handleMoodChange}
+              className="border rounded p-2 w-full"
+            >
+              <option value="Happy">Happy</option>
+              <option value="Sad">Sad</option>
+              <option value="Excited">Excited</option>
+              <option value="Angry">Angry</option>
+            </select>
+          ) : (
+            <p className="text-xl text-[#353535]">{profile.mood}</p>
+          )}
         </div>
       </div>
 
-      {/* Suggestions */}
+      {/* Suggestions Section */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold text-[#353535]">Suggestions</h2>
         <ul className="mt-4 space-y-2">
-          {profile.suggestions?.map((suggestion, index) => (
+          {suggestions.map((suggestion, index) => (
             <li
               key={index}
               className="bg-[#86D5F4] p-4 rounded-lg shadow-sm border border-[#E0E0E0] text-[#353535]"
