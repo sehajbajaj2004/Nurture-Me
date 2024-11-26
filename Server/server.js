@@ -50,11 +50,35 @@ const questionSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 const Question = mongoose.model("Question", questionSchema);
 
+// Define the Profile Schema
+const profileSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  university: { type: String, required: true },
+  photo: { type: String, default: "https://via.placeholder.com/150" },
+  height: { type: Number, required: false },
+  weight: { type: Number, required: false },
+  mood: { type: String, required: false, default: "Happy" }, // Default mood
+  habits: { type: [String], required: false, default: [] },
+  suggestions: { type: [String], required: false, default: [] },
+});
+
+// Create the Profile model
+const Profile = mongoose.model("Profile", profileSchema);
+
+// Create a default suggestion mapping for moods
+const moodSuggestions = {
+  Happy: ["Keep a gratitude journal", "Go for a walk in nature", "Plan a fun activity"],
+  Sad: ["Talk to a trusted friend", "Write your feelings in a journal", "Watch a comforting movie"],
+  Angry: ["Practice deep breathing", "Exercise to release tension", "Try a relaxation technique"],
+  Excited: ["Set realistic goals", "Share your excitement with others", "Channel energy into a project"],
+};
+
 // CORS Configuration
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
   })
 );
@@ -110,6 +134,92 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+
+// Ensure default moods and suggestions are handled correctly in the PUT endpoint
+app.put("/profile/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { name, university, photo, height, weight, mood, habits } = req.body;
+
+    // Validate mood
+    if (mood && !moodSuggestions[mood]) {
+      return res.status(400).json({ success: false, message: "Invalid mood" });
+    }
+
+    const updatedSuggestions = moodSuggestions[mood] || [];
+    const updatedProfile = await Profile.findOneAndUpdate(
+      { username },
+      {
+        name,
+        university,
+        photo,
+        height,
+        weight,
+        mood,
+        habits,
+        suggestions: updatedSuggestions,
+      },
+      { new: true, upsert: true } // Upsert ensures a new profile is created if it doesn't exist
+    );
+
+    res.json({ success: true, profile: updatedProfile });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ success: false, message: "Error updating profile" });
+  }
+});
+
+// Improve error handling for GET profile
+app.get("/profile/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const profile = await Profile.findOne({ username });
+
+    if (!profile) {
+      // Create a new profile if it doesn't exist
+      const defaultProfile = new Profile({
+        username,
+        name: username, // Default name to username
+        university: "Unknown University",
+        photo: "https://via.placeholder.com/150",
+        height: null,
+        weight: null,
+        mood: "Happy",
+        habits: [],
+        suggestions: moodSuggestions["Happy"], // Default to suggestions for "Happy"
+      });
+
+      await defaultProfile.save();
+      return res.json({ success: true, profile: defaultProfile });
+    }
+
+    res.json({ success: true, profile });
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ success: false, message: "Error fetching profile" });
+  }
+});
+
+// Validate and sanitize inputs in saveQuestions endpoint
+app.post("/saveQuestions", async (req, res) => {
+  const { username, question, type } = req.body;
+
+  try {
+    if (!username || !question || !type) {
+      return res.status(400).json({ success: false, message: "Invalid input" });
+    }
+
+    const newQuestion = new Question({ username, question, type });
+    await newQuestion.save();
+    res.json({ success: true, newQuestionId: newQuestion._id });
+  } catch (error) {
+    console.error("Error saving question:", error);
+    res.status(500).json({ success: false, message: "Error saving question" });
+  }
+});
+
 
 // Seeding FAQs
 app.post("/seedFAQs", async (req, res) => {
