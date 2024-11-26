@@ -6,10 +6,15 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check localStorage for persisted user
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    try {
+      // Check localStorage for persisted user data
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser)); // Parse and set the user if found
+      }
+    } catch (error) {
+      console.error("Error parsing user data from localStorage:", error);
+      localStorage.removeItem("user"); // Clear corrupted data
     }
   }, []);
 
@@ -20,7 +25,7 @@ export const UserProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user"); // Clear user from localStorage
+    localStorage.removeItem("user"); // Clear user data from localStorage
   };
 
   return (
