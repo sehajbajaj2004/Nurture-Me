@@ -13,8 +13,8 @@ const Hero = () => {
 
     return (
         <>
-            <section className="relative w-full h-[600px] mx-auto mb-28 mt-14 bg-cover bg-center mt-20" style={{ backgroundImage: `url(${herobg})` }}>
-                <div className={`${styles.paddingX} absolute inset-0 top-[55px] max-w-7xl mx-auto flex items-start gap-5`}>
+            <section className="relative w-full h-[657px] mx-auto bg-cover bg-center mt-20" style={{ backgroundImage: `url(${herobg})` }}>
+                <div className={`${styles.paddingX} absolute inset-0 top-[15px] max-w-7xl mx-auto flex items-start gap-5`}>
                     <div className="flex flex-row justify-center items-start mt-5 gap-3">
                         <div className="h-[500px] w-[800px] cursor-grab">
                             <EmojiCanvas />

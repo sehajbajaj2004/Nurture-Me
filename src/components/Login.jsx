@@ -34,7 +34,7 @@ const Login = () => {
     };
 
     return (
-        <section className="flex items-center justify-center min-h-screen">
+        <section className="flex items-center justify-center min-h-screen mt-28">
             <div className="outer flex flex-col items-center justify-center">
                 {/* Login Form */}
                 <div className="section-login flex-col md:p-8 mb-40">

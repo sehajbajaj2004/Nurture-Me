@@ -1,15 +1,21 @@
-import React, { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { Suspense, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Preload, useGLTF } from '@react-three/drei';
-
 import CanvasLoader from '../Loader';
 
 const Emojis = () => {
     const { scene } = useGLTF('./emojis/smiley4.gltf');
+    const emojiRef = useRef(); // Reference for the 3D model
+
+    // Automatically rotate the model continuously
+    useFrame(() => {
+        if (emojiRef.current) {
+            emojiRef.current.rotation.y += 0.01; // Adjust this value to change rotation speed
+        }
+    });
 
     return (
-
-        <mesh>
+        <mesh ref={emojiRef}>
             <hemisphereLight intensity={2} groundColor="white" />
             <pointLight intensity={2} />
             <spotLight
@@ -27,14 +33,13 @@ const Emojis = () => {
                 rotation={[0, -0.2, -0.1]}
             />
         </mesh>
-
     );
 };
 
 const EmojiCanvas = () => {
     return (
         <Canvas
-            frameloop="demand"
+            frameloop="always" // Ensures animation runs continuously
             shadows
             camera={{ position: [20, 3, 5], fov: 25 }}
             gl={{ preserveDrawingBuffer: true }}
@@ -50,6 +55,6 @@ const EmojiCanvas = () => {
             <Preload all />
         </Canvas>
     );
-}
+};
 
 export default EmojiCanvas;

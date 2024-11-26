@@ -47,6 +47,15 @@ function App() {
           <Route path="/Admin" element={<Admin />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Mini-games" element={<MiniGames />} />
+          <Route path="/profile" element={<Profile
+          name={publicProfileData.name}
+          university={publicProfileData.university}
+          bio={publicProfileData.bio}
+          posts={publicProfileData.posts}
+          followers={publicProfileData.followers}
+          following={publicProfileData.following}
+          activities={publicProfileData.activities}
+        />} />
         </Routes>
 
         {/* <ProgressOverview /> */}

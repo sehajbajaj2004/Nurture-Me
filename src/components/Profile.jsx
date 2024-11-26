@@ -2,13 +2,13 @@ import React from "react";
 
 const Profile = ({ name, university, bio, posts, followers, following, activities }) => {
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-4xl mx-auto mt-28 p-6 bg-white shadow-md rounded-lg ">
       <div className="flex items-center space-x-6">
         {/* Profile Image */}
         <div className="w-32 h-32 bg-gray-300 rounded-full overflow-hidden border-4 border-[#86D5F4]">
           <img
             src="https://via.placeholder.com/150"
-            alt="Profile"
+            alt=""
             className="object-cover w-full h-full"
           />
         </div>
