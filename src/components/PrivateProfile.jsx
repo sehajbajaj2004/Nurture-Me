@@ -93,7 +93,7 @@ const PrivateProfile = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-20 p-6 bg-[#FFFFFF] shadow-lg rounded-lg border">
+    <div className="max-w-6xl mx-auto mt-20 p-6 bg-[#FFFFFF] shadow-lg rounded-lg border mt-32">
       {/* Profile Section */}
       <div className="flex justify-center items-center mb-8 space-x-6">
         {/* Profile Image and Name */}
